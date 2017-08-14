@@ -33,7 +33,7 @@
     'data': [
         'data/task_flow.xml',
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
     'application': False,
 }
