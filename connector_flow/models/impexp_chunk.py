@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from odoo import api, fields, models
 
 
 class ImpExpChunk(models.Model):
@@ -33,8 +33,7 @@ class ImpExpChunk(models.Model):
                 ('done', 'Done')]
 
     file_id = fields.Many2one('impexp.file', string='File')
-    name = fields.Char(string='Name', required=True)
-    data = fields.Text(string='Data', required=True)
+    name = fields.Char(required=True)
+    data = fields.Text(required=True)
     task_id = fields.Many2one(string='Related Task', related='file_id.task_id')
-    state = fields.Selection(string='State', selection='_states',
-                             default='new')
+    state = fields.Selection(selection='_states', default='new')

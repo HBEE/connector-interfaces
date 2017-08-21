@@ -18,13 +18,15 @@
 #
 ##############################################################################
 
-from openerp import models, api
+import base64
+import csv
+import json
+import logging
+
+from odoo import api, models
+
 from .abstract_task import AbstractTask
 
-from base64 import b64decode
-import csv
-import simplejson
-import logging
 _logger = logging.getLogger(__name__)
 
 
@@ -42,8 +44,8 @@ class TableRowImport(AbstractTask):
 
         lineno = 0
         header = None
-        file = self.session.env['impexp.file'].browse(file_id)
-        rows = self._row_generator(b64decode(file.attachment_id.datas),
+        file = self.env['impexp.file'].browse(file_id)
+        rows = self._row_generator(base64.b64decode(file.attachment_id.datas),
                                    config=config)
         for row in rows:
             lineno += 1
@@ -56,9 +58,9 @@ class TableRowImport(AbstractTask):
             data = row
             if header:
                 data = dict(zip(header, data))
-            chunk_id = self.session.env['impexp.chunk'].create({
+            chunk_id = self.env['impexp.chunk'].create({
                 'name': name,
-                'data': simplejson.dumps(data),
+                'data': json.dumps(data),
                 'file_id': file.id,
             }).id
             self.run_successor_tasks(chunk_id=chunk_id, async=async, **kwargs)

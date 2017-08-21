@@ -23,23 +23,25 @@
     'name': 'Connector-based task flow for import/export',
     'version': '10.0.1.0.0',
     'category': 'Connector',
-    'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA)',
+    'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA),Versada',
     'license': 'AGPL-3',
     'website': 'http://www.initos.com',
     'depends': [
         'connector',
     ],
     'external_dependencies': {
-        'python': ['ftputil'],
+        'python': [
+            'ftputil',
+        ],
     },
     'data': [
-        'impexp_task_view.xml',
-        'file_view.xml',
-        'chunk_view.xml',
-        'wizard/run_task_view.xml',
+        'views/impexp_task.xml',
+        'views/impexp_file.xml',
+        'views/impexp_chunk.xml',
+        'wizards/run_task_view.xml',
         'security/ir.model.access.csv',
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
     'application': False,
 }

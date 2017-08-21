@@ -18,11 +18,12 @@
 #
 ##############################################################################
 
-from openerp import models, api
-from .abstract_task import AbstractChunkReadTask
-from cStringIO import StringIO
-
+import cStringIO
 import csv
+
+from odoo import api, models
+
+from .abstract_task import AbstractChunkReadTask
 
 
 class CsvExport(AbstractChunkReadTask):
@@ -40,7 +41,7 @@ class CsvExport(AbstractChunkReadTask):
                 return value.encode(encoding)
             return value
 
-        data = StringIO()
+        data = cStringIO.StringIO()
         writer = csv.writer(data)
         for row in chunk_data:
             writer.writerow(map(encode_value, row))

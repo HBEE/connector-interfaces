@@ -18,12 +18,15 @@
 #
 ##############################################################################
 
-from openerp import models, api
-from .abstract_task import AbstractTask
-from base64 import b64decode
+import base64
+import logging
+
 import ftputil
 import ftputil.session
-import logging
+from odoo import api, models
+
+from .abstract_task import AbstractTask
+
 _logger = logging.getLogger(__name__)
 
 
@@ -49,8 +52,7 @@ class FtpUpload(AbstractTask):
         ftp_config = config['ftp']
         upload_directory = ftp_config.get('upload_directory', '')
         port_session_factory = ftputil.session.session_factory(
-            port=int(ftp_config.get('port', 21))
-            )
+            port=int(ftp_config.get('port', 21)))
         with ftputil.FTPHost(ftp_config['host'], ftp_config['user'],
                              ftp_config['password'],
                              session_factory=port_session_factory) as ftp_conn:
@@ -63,9 +65,9 @@ class FtpUpload(AbstractTask):
                 self._handle_new_target(ftp_conn, target_name, filedata)
 
     def run(self, config=None, file_id=None, async=True):
-        f = self.session.env['impexp.file'].browse(file_id)
+        f = self.env['impexp.file'].browse(file_id)
         self._upload_file(config, f.attachment_id.datas_fname,
-                          b64decode(f.attachment_id.datas))
+                          base64.b64decode(f.attachment_id.datas))
 
 
 class FtpUploadTask(models.Model):

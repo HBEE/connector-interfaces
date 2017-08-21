@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from odoo import api, fields, models
 
 
 class ImpExpFile(models.Model):
@@ -34,5 +34,4 @@ class ImpExpFile(models.Model):
     attachment_id = fields.Many2one('ir.attachment', string='Attachment',
                                     required=True)
     task_id = fields.Many2one('impexp.task', string='Task')
-    state = fields.Selection(string='State', selection='_states',
-                             default='new', required=True)
+    state = fields.Selection(selection='_states', default='new', required=True)
