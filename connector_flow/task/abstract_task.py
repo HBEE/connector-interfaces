@@ -17,8 +17,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+import base64
 import json
-from base64 import b64encode, b64decode
 
 from odoo import _
 
@@ -53,7 +53,7 @@ class AbstractTask(object):
     def create_file(self, filename, data):
         ir_attachment = self.env['ir.attachment'].\
             create({'name': filename,
-                    'datas': b64encode(data),
+                    'datas': base64.b64encode(data),
                     'datas_fname': filename})
         impexp_file = self.env['impexp.file'].\
             create({'attachment_id': ir_attachment.id,
@@ -64,7 +64,7 @@ class AbstractTask(object):
     def load_file(self, file_id):
         f = self.env['impexp.file'].browse(file_id)
         if f.attachment_id.datas:
-            return b64decode(f.attachment_id.datas)
+            return base64.b64decode(f.attachment_id.datas)
         return None
 
 

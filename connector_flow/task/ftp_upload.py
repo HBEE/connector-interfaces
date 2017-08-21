@@ -21,13 +21,17 @@
 import base64
 import logging
 
-import ftputil
-import ftputil.session
 from odoo import api, models
 
 from .abstract_task import AbstractTask
 
 _logger = logging.getLogger(__name__)
+
+try:
+    import ftputil
+    import ftputil.session
+except ImportError as e:
+    _logger.debug(e)
 
 
 class FtpUpload(AbstractTask):
