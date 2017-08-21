@@ -73,9 +73,7 @@ class ImpExpTask(models.Model):
     def _check_unique_flow_start(self):
         """Check that there is at most one task that starts the
            flow in a task flow"""
-        for rec in self:
-            if not rec.flow_start:
-                continue
+        for rec in self.filtered('flow_start'):
             flow_start_count = self.search_count([
                 ('flow_id', '=', rec.flow_id.id),
                 ('flow_start', '=', True),
