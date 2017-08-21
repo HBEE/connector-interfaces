@@ -24,7 +24,7 @@
     'version': '10.0.1.0.0',
     'category': 'Connector',
     'license': 'AGPL-3',
-    'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA)',
+    'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA),Versada',
     'website': 'http://www.initos.com',
     'depends': [
         'connector_flow',
