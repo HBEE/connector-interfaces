@@ -23,18 +23,18 @@
     'name': 'XLS Import for connector_flow',
     'version': '10.0.1.0.0',
     'category': 'Connector',
-    'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA)',
+    'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA),Versada',
     'license': 'AGPL-3',
     'website': 'http://www.initos.com',
     'depends': [
         'connector_flow',
     ],
     'external_dependencies': {
-        'python': ['xlrd'],
+        'python': [
+            'xlrd',
+        ],
     },
-    'data': [
-    ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
     'application': False,
 }

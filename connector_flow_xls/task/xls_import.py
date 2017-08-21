@@ -18,13 +18,9 @@
 #
 ##############################################################################
 
+from odoo import api, models
+from odoo.addons.connector_flow.task.csv_import import TableRowImport
 from xlrd import open_workbook
-import logging
-
-from openerp import models, api
-from openerp.addons.connector_flow.task.csv_import import TableRowImport
-
-_logger = logging.getLogger(__name__)
 
 
 class XlsImport(TableRowImport):
