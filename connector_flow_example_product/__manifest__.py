@@ -21,7 +21,7 @@
 
 {
     'name': 'Example (Product Catalog Import) for connector_flow',
-    'version': '8.0.1.0.0',
+    'version': '10.0.1.0.0',
     'category': 'Connector',
     'license': 'AGPL-3',
     'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA)',
@@ -33,7 +33,7 @@
     'data': [
         'data/task_flow.xml',
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
     'application': False,
 }
