@@ -18,16 +18,16 @@
 #
 ##############################################################################
 
+import base64
 import urllib2
-from base64 import b64encode
 
-from openerp import models, api
-from openerp.addons.connector_flow.task.abstract_task \
-    import AbstractChunkReadTask
+from odoo import api, models
+from odoo.addons.connector_flow.task.abstract_task import AbstractChunkReadTask
 
 
 class ProductCatalogImport(AbstractChunkReadTask):
-    def read_chunk(self, config=None, chunk_data=None, async=True):
+
+    def read_chunk(self, config=None, chunk_data=None, async=True, **kwargs):
         product_data = {
             'name': chunk_data.get('Name'),
             'list_price': float(chunk_data.get('Preis VK')),
@@ -36,8 +36,8 @@ class ProductCatalogImport(AbstractChunkReadTask):
         product_image_url = chunk_data.get('Image URL')
         if product_image_url:
             url_obj = urllib2.urlopen(product_image_url)
-            product_data['image'] = b64encode(url_obj.read())
-        self.session.env['product.product'].create(product_data)
+            product_data['image'] = base64.b64encode(url_obj.read())
+        self.env['product.product'].create(product_data)
 
 
 class ProductCatalogImportTask(models.Model):

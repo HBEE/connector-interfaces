@@ -18,7 +18,9 @@
 #
 ##############################################################################
 
-from . import csv_export
-from . import csv_import
-from . import ftp_upload
-from . import ftp_download
+from . import (
+    csv_export,
+    csv_import,
+    ftp_upload,
+    ftp_download,
+)

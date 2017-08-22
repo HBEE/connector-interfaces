@@ -20,26 +20,20 @@
 ##############################################################################
 
 {
-    'name': 'Connector-based task flow for import/export',
-    'version': '8.0.1.0.0',
+    'name': 'Example (Product Catalog Import) for connector_flow',
+    'version': '10.0.1.0.0',
     'category': 'Connector',
-    'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA)',
     'license': 'AGPL-3',
+    'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA),Versada',
     'website': 'http://www.initos.com',
     'depends': [
-        'connector',
+        'connector_flow',
+        'sale',
     ],
-    'external_dependencies': {
-        'python': ['ftputil'],
-    },
     'data': [
-        'impexp_task_view.xml',
-        'file_view.xml',
-        'chunk_view.xml',
-        'wizard/run_task_view.xml',
-        'security/ir.model.access.csv',
+        'data/task_flow.xml',
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
     'application': False,
 }

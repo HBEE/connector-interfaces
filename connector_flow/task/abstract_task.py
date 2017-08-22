@@ -17,22 +17,21 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import simplejson
-from base64 import b64encode, b64decode
+import base64
+import json
 
-from openerp import _
-from openerp.addons.connector.session import ConnectorSession
+from odoo import _
 
 
 class AbstractTask(object):
 
-    def __init__(self, cr, uid, ids):
-        self.session = ConnectorSession(cr, uid)
+    def __init__(self, env, ids):
+        self.env = env
         assert len(ids) == 1, "Single instance id expected"
         self._id = ids[0]
 
     def run_task(self, task_id, **kwargs):
-        return self.session.env['impexp.task'].browse(task_id).do_run(**kwargs)
+        return self.env['impexp.task'].browse(task_id).do_run(**kwargs)
 
     def related_action(self, job=None, **kwargs):
         """Overwrite this method to add a related action function
@@ -44,7 +43,7 @@ class AbstractTask(object):
         raise Exception("Not Implemented")
 
     def run_successor_tasks(self, **kwargs):
-        successors = self.session.env['impexp.task.transition'].\
+        successors = self.env['impexp.task.transition'].\
             search_read([('task_from_id', '=', self._id)], ['task_to_id'])
         retval = None
         for succ in successors:
@@ -52,20 +51,20 @@ class AbstractTask(object):
         return retval
 
     def create_file(self, filename, data):
-        ir_attachment = self.session.env['ir.attachment'].\
+        ir_attachment = self.env['ir.attachment'].\
             create({'name': filename,
-                    'datas': b64encode(data),
+                    'datas': base64.b64encode(data),
                     'datas_fname': filename})
-        impexp_file = self.session.env['impexp.file'].\
+        impexp_file = self.env['impexp.file'].\
             create({'attachment_id': ir_attachment.id,
                     'task_id': self._id,
                     'state': 'done'})
         return impexp_file.id
 
     def load_file(self, file_id):
-        f = self.session.env['impexp.file'].browse(file_id)
+        f = self.env['impexp.file'].browse(file_id)
         if f.attachment_id.datas:
-            return b64decode(f.attachment_id.datas)
+            return base64.b64decode(f.attachment_id.datas)
         return None
 
 
@@ -85,16 +84,16 @@ class AbstractChunkReadTask(AbstractTask):
     """Task that reads (and processes) an existing chunk of data"""
 
     def run(self, chunk_id=None, **kwargs):
-        chunk = self.session.env['impexp.chunk'].browse(chunk_id)
+        chunk = self.env['impexp.chunk'].browse(chunk_id)
         chunk_data = chunk.data
-        kwargs['chunk_data'] = simplejson.loads(chunk_data)
+        kwargs['chunk_data'] = json.loads(chunk_data)
         new_state = 'failed'
         result = None
         try:
             result = self.read_chunk(**kwargs)
             new_state = 'done'
         except:
-            self.session.env.cr.rollback()
+            self.env.cr.rollback()
             raise
         finally:
             try:
@@ -118,9 +117,9 @@ class AbstractChunkWriteTask(AbstractTask):
     """Task that writes (and feeds) data as a chunk"""
     def write_and_run_chunk(self, chunk_data, chunk_name,
                             async=True, **kwargs):
-        chunk = self.session.env['impexp.chunk'].\
+        chunk = self.env['impexp.chunk'].\
             create({'name': chunk_name,
-                    'data': simplejson.dumps(chunk_data)})
+                    'data': json.dumps(chunk_data)})
         return self.run_successor_tasks(chunk_id=chunk.id,
                                         async=async,
                                         **kwargs)

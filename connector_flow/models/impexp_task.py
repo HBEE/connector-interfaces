@@ -18,22 +18,10 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, exceptions, _
+import ast
 
-from openerp.addons.connector.queue.job import job, related_action
-from openerp.addons.connector.session import ConnectorSession
-from ast import literal_eval
-
-
-def impexp_related_action(session, job):
-    # Redirect the call to OpenERP model
-    return session.env['impexp.task'].related_action(job=job)
-
-
-@job
-@related_action(action=impexp_related_action)
-def run_task(session, model_name, ids, **kwargs):
-    return session.env['impexp.task'].browse(ids).run_task(**kwargs)
+from odoo import _, api, exceptions, fields, models
+from odoo.addons.queue_job.job import job, related_action
 
 
 class ImpExpTaskTransition(models.Model):
@@ -49,7 +37,7 @@ class ImpExpTaskFlow(models.Model):
     _name = 'impexp.task.flow'
     _description = 'A flow of tasks that are connected by transitions'
 
-    name = fields.Char(string='Name', required=True)
+    name = fields.Char(required=True)
     task_ids = fields.One2many('impexp.task', 'flow_id',
                                string='Tasks in Flow')
 
@@ -62,8 +50,8 @@ class ImpExpTask(models.Model):
     def _get_available_tasks(self):
         return []
 
-    name = fields.Char(string='Name', required=True)
-    task = fields.Selection(selection='_get_available_tasks', string='Task')
+    name = fields.Char(required=True)
+    task = fields.Selection(selection='_get_available_tasks')
     config = fields.Text(string='Configuration')
     last_start = fields.Datetime(string='Starting Time of the Last Run')
     last_finish = fields.Datetime(string='Finishing Time of the '
@@ -80,19 +68,19 @@ class ImpExpTask(models.Model):
                                          string='Incoming Transitions')
     flow_start = fields.Boolean(string='Start of a Task Flow')
 
-    @api.one
+    @api.multi
     @api.constrains('flow_start', 'flow_id')
     def _check_unique_flow_start(self):
         """Check that there is at most one task that starts the
            flow in a task flow"""
-        if self.flow_start:
-            flow_start_count = self.search_count(
-                [('flow_id', '=', self.flow_id.id),
-                 ('flow_start', '=', True)])
-            if 1 < flow_start_count:
-                raise exceptions. \
-                    ValidationError(_('The start of a task flow '
-                                      'has to be unique'))
+        for rec in self.filtered('flow_start'):
+            flow_start_count = self.search_count([
+                ('flow_id', '=', rec.flow_id.id),
+                ('flow_start', '=', True),
+            ])
+            if flow_start_count > 1:
+                raise exceptions.ValidationError(
+                    _('The start of a task flow has to be unique'))
 
     @api.multi
     def _config(self):
@@ -100,20 +88,19 @@ class ImpExpTask(models.Model):
         self.ensure_one()
         config = self.config
         if config:
-            return literal_eval(config)
+            return ast.literal_eval(config)
         return {}
 
     @api.multi
     def do_run(self, async=True, **kwargs):
         self.ensure_one()
         if async:
-            method = run_task.delay
+            method = self.with_delay().run_task
             kwargs.update({'description': self.name,
                            'max_retries': self.max_retries})
         else:
-            method = run_task
-        result = method(ConnectorSession.from_env(self.env),
-                        self._name, self.ids, async=async, **kwargs)
+            method = self.run_task
+        result = method(async=async, **kwargs)
         # If we run asynchronously, we ignore the result
         #  (which is the UUID of the job in the queue).
         if not async:
@@ -137,17 +124,13 @@ class ImpExpTask(models.Model):
         self.ensure_one()
         task_method = self.task
         task_class = getattr(self, task_method + '_class')()
-        return task_class(self.env.cr, self.env.uid, self.ids)
+        return task_class(self.env, self.ids)
 
+    @job
+    @related_action(action='related_action_impexp_task')
     @api.multi
     def run_task(self, **kwargs):
         self.ensure_one()
         task_instance = self.get_task_instance()
         config = self._config()
         return task_instance.run(config=config, **kwargs)
-
-    @api.model
-    def related_action(self, job=None, **kwargs):
-        assert job, "Job argument missing"
-        task_instance = self.browse(job.args[1]).get_task_instance()
-        return task_instance.related_action(job=job, **kwargs)

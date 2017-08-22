@@ -17,14 +17,17 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
-from xlrd import open_workbook
 import logging
 
-from openerp import models, api
-from openerp.addons.connector_flow.task.csv_import import TableRowImport
+from odoo import api, models
+from odoo.addons.connector_flow.task.csv_import import TableRowImport
 
 _logger = logging.getLogger(__name__)
+
+try:
+    from xlrd import open_workbook
+except ImportError as e:
+    _logger.debug(e)
 
 
 class XlsImport(TableRowImport):

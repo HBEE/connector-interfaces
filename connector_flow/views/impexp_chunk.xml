@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+<record model="ir.ui.view" id="chunk_form_view">
+    <field name="name">impexp.chunk.form.view</field>
+    <field name="model">impexp.chunk</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+        <form string="Task Form" create='false'>
+            <sheet>
+                <group>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="data" attrs="{'readonly': [('state', 'in', ['failed', 'done'])]}"/>
+                    </group>
+                    <group>
+                        <field name="state" readonly="1"/>
+                    </group>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+</odoo>

@@ -20,20 +20,21 @@
 ##############################################################################
 
 {
-    'name': 'Example (Product Catalog Import) for connector_flow',
-    'version': '8.0.1.0.0',
+    'name': 'XLS Import for connector_flow',
+    'version': '10.0.1.0.0',
     'category': 'Connector',
+    'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA),Versada',
     'license': 'AGPL-3',
-    'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA)',
     'website': 'http://www.initos.com',
     'depends': [
         'connector_flow',
-        'sale',
     ],
-    'data': [
-        'data/task_flow.xml',
-    ],
-    'installable': False,
+    'external_dependencies': {
+        'python': [
+            'xlrd',
+        ],
+    },
+    'installable': True,
     'auto_install': False,
     'application': False,
 }

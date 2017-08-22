@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
+#    OpenERP, Open Source Management Solution
 #    Copyright (C) 2014 initOS GmbH & Co. KG (<http://www.initos.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -18,23 +19,29 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
-
-
-class ImpExpChunk(models.Model):
-    _name = 'impexp.chunk'
-    _description = ('Structured (parsed) data from a file'
-                    ' to be imported/exported')
-
-    @api.model
-    def _states(self):
-        return [('new', 'New'),
-                ('failed', 'Failed'),
-                ('done', 'Done')]
-
-    file_id = fields.Many2one('impexp.file', string='File')
-    name = fields.Char(string='Name', required=True)
-    data = fields.Text(string='Data', required=True)
-    task_id = fields.Many2one(string='Related Task', related='file_id.task_id')
-    state = fields.Selection(string='State', selection='_states',
-                             default='new')
+{
+    'name': 'Connector-based task flow for import/export',
+    'version': '10.0.1.0.0',
+    'category': 'Connector',
+    'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA),Versada',
+    'license': 'AGPL-3',
+    'website': 'http://www.initos.com',
+    'depends': [
+        'connector',
+    ],
+    'external_dependencies': {
+        'python': [
+            'ftputil',
+        ],
+    },
+    'data': [
+        'views/impexp_task.xml',
+        'views/impexp_file.xml',
+        'views/impexp_chunk.xml',
+        'wizards/run_task_view.xml',
+        'security/ir.model.access.csv',
+    ],
+    'installable': True,
+    'auto_install': False,
+    'application': False,
+}

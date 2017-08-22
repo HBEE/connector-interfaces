@@ -18,13 +18,19 @@
 #
 ##############################################################################
 
-from openerp import models, api
+import logging
+
+from odoo import api, models
 
 from .abstract_task import AbstractTask
-import ftputil
-import ftputil.session
-import logging
+
 _logger = logging.getLogger(__name__)
+
+try:
+    import ftputil
+    import ftputil.session
+except ImportError as e:
+    _logger.debug(e)
 
 
 class FtpDownload(AbstractTask):
@@ -61,7 +67,7 @@ class FtpDownload(AbstractTask):
         _logger.info('Deleting file %s' % source)
         ftp_conn.remove(source)
 
-    def run(self, config=None, async=True):
+    def run(self, config=None, async=True, **kwargs):
         ftp_config = config['ftp']
         download_directory = ftp_config.get('download_directory', '')
         move_directory = ftp_config.get('move_directory', '')
