@@ -11,10 +11,12 @@
                 <group>
                     <group>
                         <field name="name" readonly="1"/>
-                        <field name="data" attrs="{'readonly': [('state', 'in', ['failed', 'done'])]}"/>
                     </group>
                     <group>
                         <field name="state" readonly="1"/>
+                    </group>
+                    <group string="Data" name="data" colspan="4">
+                        <field name="data" nolabel="1" attrs="{'readonly': [('state', 'in', ['failed', 'done'])]}" widget="ace" options="{'mode': 'python'}"/>
                     </group>
                 </group>
             </sheet>
