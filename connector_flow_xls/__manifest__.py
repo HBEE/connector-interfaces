@@ -21,7 +21,7 @@
 
 {
     'name': 'XLS Import for connector_flow',
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'Connector',
     'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA),Versada',
     'license': 'AGPL-3',
@@ -34,7 +34,7 @@
             'xlrd',
         ],
     },
-    'installable': True,
+    'installable': False,
     'auto_install': False,
     'application': False,
 }
