@@ -79,8 +79,7 @@ class FtpUploadTask(models.Model):
 
     @api.model
     def _get_available_tasks(self):
-        return super(FtpUploadTask, self)._get_available_tasks() + [
-            ('ftp_upload', 'FTP Upload')]
+        return super()._get_available_tasks() + [('ftp_upload', 'FTP Upload')]
 
     def ftp_upload_class(self):
         return FtpUpload

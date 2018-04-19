@@ -86,8 +86,7 @@ class CsvImportTask(models.Model):
 
     @api.model
     def _get_available_tasks(self):
-        return super(CsvImportTask, self)._get_available_tasks() + [
-            ('csv_import', 'CSV Import')]
+        return super()._get_available_tasks() + [('csv_import', 'CSV Import')]
 
     def csv_import_class(self):
         return CsvImport
