@@ -26,8 +26,8 @@ _logger = logging.getLogger(__name__)
 
 try:
     from xlrd import open_workbook
-except ImportError as e:
-    _logger.debug(e)
+except ImportError:
+    _logger.info('xlrd Python package is missing')
 
 
 class XlsImport(TableRowImport):
@@ -46,8 +46,7 @@ class XlsImportTask(models.Model):
 
     @api.model
     def _get_available_tasks(self):
-        return super(XlsImportTask, self)._get_available_tasks() \
-            + [('xls_import', 'XLS Import')]
+        return super()._get_available_tasks() + [('xls_import', 'XLS Import')]
 
     def xls_import_class(self):
         return XlsImport

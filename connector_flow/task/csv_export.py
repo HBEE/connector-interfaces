@@ -18,8 +18,8 @@
 #
 ##############################################################################
 
-import cStringIO
 import csv
+import io
 
 from odoo import api, models
 
@@ -37,14 +37,14 @@ class CsvExport(AbstractChunkReadTask):
         encoding = config.get('encoding', 'utf-8')
 
         def encode_value(value):
-            if isinstance(value, unicode):
+            if isinstance(value, str):
                 return value.encode(encoding)
             return value
 
-        data = cStringIO.StringIO()
+        data = io.StringIO()
         writer = csv.writer(data)
         for row in chunk_data:
-            writer.writerow(map(encode_value, row))
+            writer.writerow(list(map(encode_value, row)))
 
         file_id = self.create_file(config.get('filename'), data.getvalue())
         result = self.run_successor_tasks(file_id=file_id, async=async)
@@ -58,8 +58,7 @@ class CsvExportTask(models.Model):
 
     @api.model
     def _get_available_tasks(self):
-        return super(CsvExportTask, self)._get_available_tasks() + [
-            ('csv_export', 'CSV Export')]
+        return super()._get_available_tasks() + [('csv_export', 'CSV Export')]
 
     def csv_export_class(self):
         return CsvExport
