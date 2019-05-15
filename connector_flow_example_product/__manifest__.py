@@ -21,7 +21,7 @@
 
 {
     'name': 'Example (Product Catalog Import) for connector_flow',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': 'Connector',
     'license': 'AGPL-3',
     'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA),Versada',

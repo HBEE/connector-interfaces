@@ -21,7 +21,7 @@
 
 {
     'name': 'Connector-based task flow for import/export',
-    'version': '11.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': 'Connector',
     'author': 'initOS GmbH & Co. KG,Odoo Community Association (OCA),Versada',
     'license': 'AGPL-3',
@@ -41,7 +41,7 @@
         'wizards/run_task_view.xml',
         'security/ir.model.access.csv',
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
     'application': False,
 }
