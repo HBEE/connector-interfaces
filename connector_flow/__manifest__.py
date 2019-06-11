@@ -41,7 +41,7 @@
         'wizards/run_task_view.xml',
         'security/ir.model.access.csv',
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
     'application': False,
 }
