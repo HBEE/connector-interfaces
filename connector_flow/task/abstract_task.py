@@ -116,10 +116,10 @@ class AbstractChunkReadTask(AbstractTask):
 class AbstractChunkWriteTask(AbstractTask):
     """Task that writes (and feeds) data as a chunk"""
     def write_and_run_chunk(self, chunk_data, chunk_name,
-                            async=True, **kwargs):
+                            delay=True, **kwargs):
         chunk = self.env['impexp.chunk'].\
             create({'name': chunk_name,
                     'data': json.dumps(chunk_data)})
         return self.run_successor_tasks(chunk_id=chunk.id,
-                                        async=async,
+                                        delay=delay,
                                         **kwargs)

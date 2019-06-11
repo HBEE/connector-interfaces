@@ -92,18 +92,18 @@ class ImpExpTask(models.Model):
         return {}
 
     @api.multi
-    def do_run(self, async=True, **kwargs):
+    def do_run(self, delay=True, **kwargs):
         self.ensure_one()
-        if async:
+        if delay:
             method = self.with_delay().run_task
             kwargs.update({'description': self.name,
                            'max_retries': self.max_retries})
         else:
             method = self.run_task
-        result = method(async=async, **kwargs)
-        # If we run asynchronously, we ignore the result
+        result = method(delay=delay, **kwargs)
+        # If we run delayhronously, we ignore the result
         #  (which is the UUID of the job in the queue).
-        if not async:
+        if not delay:
             return result
 
     @api.model

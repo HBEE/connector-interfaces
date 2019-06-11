@@ -67,7 +67,7 @@ class FtpDownload(AbstractTask):
         _logger.info('Deleting file %s' % source)
         ftp_conn.remove(source)
 
-    def run(self, config=None, async=True, **kwargs):
+    def run(self, config=None, delay=True, **kwargs):
         ftp_config = config['ftp']
         download_directory = ftp_config.get('download_directory', '')
         move_directory = ftp_config.get('move_directory', '')
@@ -86,7 +86,7 @@ class FtpDownload(AbstractTask):
                                                       download_directory,
                                                       ftpfile,
                                                       move_directory)
-                    self.run_successor_tasks(file_id=file_id, async=async)
+                    self.run_successor_tasks(file_id=file_id, delay=delay)
                     downloaded_files.append(ftpfile)
 
             # Move/delete files only after all files have been processed.

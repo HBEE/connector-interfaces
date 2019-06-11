@@ -68,7 +68,7 @@ class FtpUpload(AbstractTask):
             else:
                 self._handle_new_target(ftp_conn, target_name, filedata)
 
-    def run(self, config=None, file_id=None, async=True):
+    def run(self, config=None, file_id=None, delay=True):
         f = self.env['impexp.file'].browse(file_id)
         self._upload_file(config, f.attachment_id.datas_fname,
                           base64.b64decode(f.attachment_id.datas))

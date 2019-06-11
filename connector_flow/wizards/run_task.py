@@ -23,12 +23,13 @@ from odoo import api, fields, models
 
 class RunTaskWizard(models.TransientModel):
     _name = 'impexp.wizard.runtask'
+    _description = 'Run Task Wizard'
 
     flow_id = fields.Many2one('impexp.task.flow', string='Task Flow')
     task_id = fields.Many2one('impexp.task', string='Task', required=True)
     datas = fields.Binary(string='File')
     datas_fname = fields.Char(string='File Name', size=256)
-    async = fields.Boolean(string='Run Asynchronously', default=True)
+    delay = fields.Boolean(string='Run Asynchronously', default=True)
     attachment_id = fields.Many2one('ir.attachment', string='Result File')
 
     @api.onchange('flow_id')
@@ -43,7 +44,7 @@ class RunTaskWizard(models.TransientModel):
     @api.multi
     def run_task(self):
         self.ensure_one()
-        kwargs = {'async': self.async}
+        kwargs = {'delay': self.delay}
         if self.datas:
             upload_name = "Upload from run task wizard: %s" \
                 % self.datas_fname

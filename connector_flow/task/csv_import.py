@@ -36,7 +36,7 @@ class TableRowImport(AbstractTask):
            Has to be implemented in derived classes."""
         raise Exception("Not Implemented")
 
-    def run(self, config=None, file_id=None, async=True, **kwargs):
+    def run(self, config=None, file_id=None, delay=True, **kwargs):
         if not file_id:
             return
 
@@ -63,7 +63,7 @@ class TableRowImport(AbstractTask):
                 'data': json.dumps(data),
                 'file_id': file.id,
             }).id
-            self.run_successor_tasks(chunk_id=chunk_id, async=async, **kwargs)
+            self.run_successor_tasks(chunk_id=chunk_id, delay=delay, **kwargs)
             if lineno % 1000 == 0:
                 _logger.info('Created %d chunks', lineno)
 

@@ -29,7 +29,7 @@ from .abstract_task import AbstractChunkReadTask
 class CsvExport(AbstractChunkReadTask):
     "Reads a chunk and writes it into a CSV file"
 
-    def read_chunk(self, config=None, chunk_data=None, async=True):
+    def read_chunk(self, config=None, chunk_data=None, delay=True):
         if not chunk_data:
             return
 
@@ -47,7 +47,7 @@ class CsvExport(AbstractChunkReadTask):
             writer.writerow(list(map(encode_value, row)))
 
         file_id = self.create_file(config.get('filename'), data.getvalue())
-        result = self.run_successor_tasks(file_id=file_id, async=async)
+        result = self.run_successor_tasks(file_id=file_id, delay=delay)
         if result:
             return result
         return file_id

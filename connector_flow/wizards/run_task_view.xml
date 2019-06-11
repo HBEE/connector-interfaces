@@ -12,7 +12,7 @@
                 <field name="task_id"/>
                 <field name="datas" filename="datas_fname" />
                 <field name="datas_fname" invisible="1"/>
-                <field name="async"/>
+                <field name="delay"/>
             </group>
             <footer>
                 <button name="run_task" string="Run Task" type="object" class="oe_highlight"/>
